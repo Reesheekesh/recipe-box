@@ -61,12 +61,13 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Wrong password" });
     }
 
+    // 🔐 UPDATED JWT SECRET (SAFE)
     const token = jwt.sign(
       {
         id: user._id,
         username: user.username,
       },
-      "secretkey",
+      process.env.JWT_SECRET || "secretkey",
       { expiresIn: "1d" }
     );
 
@@ -89,10 +90,10 @@ router.post("/login", async (req, res) => {
 });
 
 
-// 🔥 FOLLOW / UNFOLLOW (PROPER VERSION)
+// 🔥 FOLLOW / UNFOLLOW
 router.put("/follow/:id", async (req, res) => {
   try {
-    const currentUserId = req.body.userId; // logged in user
+    const currentUserId = req.body.userId;
     const targetUserId = req.params.id;
 
     if (!currentUserId) {
@@ -115,7 +116,6 @@ router.put("/follow/:id", async (req, res) => {
     );
 
     if (isFollowing) {
-      // 🔻 UNFOLLOW
       currentUser.following = currentUser.following.filter(
         (id) => id.toString() !== targetUserId
       );
@@ -125,7 +125,6 @@ router.put("/follow/:id", async (req, res) => {
       );
 
     } else {
-      // 🔺 FOLLOW
       currentUser.following.push(targetUserId);
       targetUser.followers.push(currentUserId);
     }
