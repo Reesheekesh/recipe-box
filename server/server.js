@@ -32,10 +32,7 @@ app.use("/api/recipes", recipeRoutes);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Server start
-const PORT = 5000;
+const PORT = process.env.PORT || 5000; // 🔥 IMPORTANT FOR RENDER
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-const cors = require("cors");
-app.use(cors());
